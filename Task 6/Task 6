@@ -1,0 +1,9 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX 500
+#define LEN 30
+static void trim(char *s){size_t n=strlen(s);if(n&&s[n-1]=='\n')s[n-1]='\0';}
+static void sort_names(char a[][LEN],int n){for(int i=1;i<n;i++){char key[LEN];strcpy(key,a[i]);int j=i-1;while(j>=0&&strcmp(a[j],key)>0){strcpy(a[j+1],a[j]);j--;}strcpy(a[j+1],key);}}
+static int search(char a[][LEN],int n,const char *key,int *cmp){int lo=0,hi=n-1;*cmp=0;while(lo<=hi){int mid=lo+(hi-lo)/2;(*cmp)++;int c=strcmp(a[mid],key);if(!c)return mid;if(c<0)lo=mid+1;else hi=mid-1;}return -1;}
+static int duplicates(char a[][LEN],int n){int d=0;for(int i=1;i<n;i++)if(strcmp(a[i],a[i-1])==0)d++;return d;}
+int main(void){int n;char names[MAX][LEN],key[LEN];if(scanf("%d",&n)!=1||n<1||n>MAX)return 1;int ch;while((ch=getchar())!='\n'&&ch!=EOF){}for(int i=0;i<n;i++){if(!fgets(names[i],LEN,stdin))return 1;trim(names[i]);}sort_names(names,n);printf("Sorted names:\n");for(int i=0;i<n;i++)printf("%s\n",names[i]);printf("Duplicate adjacent pairs: %d\n",duplicates(names,n));if(!fgets(key,LEN,stdin))return 1;trim(key);int cmp,pos=search(names,n,key,&cmp);printf("Position = %d, comparisons = %d\n",pos,cmp);return 0;}
