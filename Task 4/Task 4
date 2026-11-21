@@ -1,0 +1,8 @@
+include <stdio.h>
+#define D 38
+#define M 12
+void row_totals(const double r[D][M],double t[D]){for(int i=0;i<D;i++){t[i]=0;for(int j=0;j<M;j++)t[i]+=r[i][j];}}
+void column_averages(const double r[D][M],double a[M]){for(int j=0;j<M;j++){double s=0;for(int i=0;i<D;i++)s+=r[i][j];a[j]=s/D;}}
+void maximum(const double r[D][M],int *ri,int *rj){*ri=0;*rj=0;for(int i=0;i<D;i++)for(int j=0;j<M;j++)if(r[i][j]>r[*ri][*rj]){*ri=i;*rj=j;}}
+void deficient(const double r[D][M],double threshold,int f[D]){double t[D];row_totals(r,t);for(int i=0;i<D;i++)f[i]=(t[i]/M<threshold);}
+int main(void){static double r[D][M];double totals[D],avgs[M],sum=0;int flags[D],ri,rj;for(int i=0;i<D;i++)for(int j=0;j<M;j++)if(scanf("%lf",&r[i][j])!=1||r[i][j]<0){fprintf(stderr,"Invalid rainfall input\n");return 1;}row_totals(r,totals);column_averages(r,avgs);maximum(r,&ri,&rj);for(int i=0;i<D;i++)sum+=totals[i];double state=sum/(D*M);deficient(r,.60*state,flags);printf("State average rainfall = %.2f mm\n",state);printf("Wettest district-month = district %d, month %d, %.2f mm\n",ri+1,rj+1,r[ri][rj]);printf("Monthly averages:");for(int j=0;j<M;j++)printf(" %.2f",avgs[j]);printf("\nDeficient districts:");for(int i=0;i<D;i++)if(flags[i])printf(" %d",i+1);printf("\n");return 0;}
